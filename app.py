@@ -14,11 +14,7 @@ nltk.download('stopwords', quiet=True)
 
 app = Flask(__name__)
 
-if getattr(sys, 'frozen', False):
-    BASE_DIR = sys._MEIPASS
-else:
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'models', 'spam_classifier_model.pkl')
 VEC_PATH = os.path.join(BASE_DIR, 'models', 'tfidf_vectorizer.pkl')
 
@@ -26,7 +22,7 @@ try:
     model = joblib.load(MODEL_PATH)
     vectorizer = joblib.load(VEC_PATH)
 except Exception as e:
-    print(f"Error loading models. Check if .pkl files are in the models/ folder: {e}")
+    print(f"Error loading models: {e}")
     sys.exit(1)
 
 stemmer = PorterStemmer()
@@ -74,4 +70,4 @@ def home():
                            cleaned_text=cleaned_text)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">&#9993;</span>
+                <h1>Email Spam Classifier</h1>
+            </div>
+            <p class="subtitle">Powered by Natural Language Processing &amp; Multinomial Naive Bayes</p>
+        </header>
+
+        <main>
+            <form method="POST" action="/" id="predict-form">
+                <div class="form-group">
+                    <label for="email_text">Paste or type email content below:</label>
+                    <textarea 
+                        name="email_text" 
+                        id="email_text" 
+                        rows="10" 
+                        placeholder="Enter the email text you want to classify..."
+                        required
+                    >{{ email_text if email_text else '' }}</textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">
+                        &#128269; Classify Email
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                        &#128260; Clear
+                    </button>
+                </div>
+            </form>
+
+            {% if prediction %}
+            <div class="result-card {{ 'spam-result' if prediction == 'spam' else 'ham-result' }}">
+                <div class="result-header">
+                    {% if prediction == 'spam' %}
+                        <span class="result-icon">&#9888;</span>
+                        <h2>SPAM DETECTED</h2>
+                    {% else %}
+                        <span class="result-icon">&#9989;</span>
+                        <h2>LEGITIMATE EMAIL (HAM)</h2>
+                    {% endif %}
+                </div>
+                
+                <div class="confidence-section">
+                    <h3>Confidence Scores</h3>
+                    <div class="confidence-bars">
+                        <div class="confidence-item">
+                            <div class="confidence-label">
+                                <span>Ham (Legitimate)</span>
+                                <span>{{ ham_confidence }}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ham-fill" style="width: {{ ham_confidence }}%"></div>
+                            </div>
+                        </div>
+                        <div class="confidence-item">
+                            <div class="confidence-label">
+                                <span>Spam</span>
+                                <span>{{ spam_confidence }}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill spam-fill" style="width: {{ spam_confidence }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="details-section">
+                    <details>
+                        <summary>View Processed Text</summary>
+                        <p class="cleaned-text">{{ cleaned_text }}</p>
+                    </details>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="samples-section">
+                <h3>&#128172; Try These Sample Emails</h3>
+                <div class="sample-cards">
+                    <div class="sample-card" onclick="loadSample('ham')">
+                        <span class="sample-label ham-label">HAM</span>
+                        <p>Hi John, just wanted to confirm our meeting tomorrow at 3 PM in the conference room. Please bring the quarterly report. Thanks, Sarah</p>
+                    </div>
+                    <div class="sample-card" onclick="loadSample('spam')">
+                        <span class="sample-label spam-label">SPAM</span>
+                        <p>CONGRATULATIONS! You have won $1,000,000! Click here to claim your prize NOW! Limited time offer, act fast! Free money waiting for you!</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const samples = {
+            'ham': "Hi John, just wanted to confirm our meeting tomorrow at 3 PM in the conference room. Please bring the quarterly report and the budget analysis spreadsheet. Let me know if you need anything else. Thanks, Sarah",
+            'spam': "CONGRATULATIONS!!! You have been selected as the winner of our $1,000,000 lottery prize! To claim your FREE money, click here NOW and provide your bank details. This is a LIMITED TIME offer! Act FAST before it expires! You are our lucky winner today!"
+        };
+
+        function loadSample(type) {
+            document.getElementById('email_text').value = samples[type];
+            document.getElementById('email_text').focus();
+        }
+
+        function clearForm() {
+            document.getElementById('email_text').value = '';
+            document.getElementById('email_text').focus();
+        }
+    </script>
+</body>
+</html>
