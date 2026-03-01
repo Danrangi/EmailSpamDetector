@@ -2,11 +2,17 @@ import os
 import sys
 import re
 import joblib
+import warnings
+import webbrowser
+from threading import Timer
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 from flask import Flask, render_template, request
+
+# Suppress version warnings in terminal
+warnings.filterwarnings("ignore", category=UserWarning)
 
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True)
@@ -14,7 +20,12 @@ nltk.download('stopwords', quiet=True)
 
 app = Flask(__name__)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Handle paths for both normal python run and PyInstaller executable
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 MODEL_PATH = os.path.join(BASE_DIR, 'models', 'spam_classifier_model.pkl')
 VEC_PATH = os.path.join(BASE_DIR, 'models', 'tfidf_vectorizer.pkl')
 
@@ -51,8 +62,9 @@ def home():
             if cleaned_text:
                 vec_text = vectorizer.transform([cleaned_text])
                 pred = model.predict(vec_text)[0]
-                
                 prob = model.predict_proba(vec_text)[0]
+                
+                # Assign confidence scores
                 spam_confidence = round(prob[0] * 100, 2)
                 ham_confidence = round(prob[1] * 100, 2)
                 
@@ -69,5 +81,12 @@ def home():
                            spam_confidence=spam_confidence,
                            cleaned_text=cleaned_text)
 
+def open_browser():
+    webbrowser.open_new('http://127.0.0.1:5000/')
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Wait 1 second for the server to start, then open the browser automatically
+    Timer(1, open_browser).start()
+    
+    # debug MUST be set to False for the executable to avoid opening two browser tabs
+    app.run(debug=False, host='0.0.0.0', port=5000)
