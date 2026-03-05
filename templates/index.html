@@ -27,12 +27,7 @@
                 class="header-logo-img"
                 onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"
             >
-            <div class="header-logo-fallback" id="logo-fallback">
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2"/>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                </svg>
-            </div>
+            
         </div>
         <div class="header-text">
             <span class="header-title">Mail Guard</span>
@@ -96,7 +91,7 @@
                     onerror="this.parentElement.innerHTML='<span>IBBUL</span>'"
                 >
             </div>
-            <span class="sidebar-footer-text">© 2025 IBBUL</span>
+            <span class="sidebar-footer-text">© 2026 IBBUL</span>
         </div>
     </aside>
 
@@ -216,16 +211,21 @@
             </div>
             {% endif %}
 
+            <p>
+                <p>.</p>
+            </p>
+
             {% if not prediction or prediction == 'unknown' %}
             <div class="detail-placeholder">
                 <div class="placeholder-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="margin: 0;">
                         <path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>
                     </svg>
                 </div>
                 <p>Paste an email above and hit classify</p>
                 <span>The AI will sort it into Inbox or Spam for you</span>
             </div>
+            
             {% endif %}
         </div>
 
