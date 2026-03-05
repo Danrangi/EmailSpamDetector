@@ -1,19 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Fetch backend data from the hidden HTML div
+ 
     const appData = document.getElementById('app-data');
     const serverPrediction = appData.dataset.prediction;
     const serverEmailText = appData.dataset.emailText;
     const serverConfidence = parseFloat(appData.dataset.confidence || 0);
 
-    // 2. Setup variables
-    const avatarColors = ['#2563eb','#d97706','#7c3aed','#059669','#dc2626','#0891b2','#c026d3','#ea580c'];
+        const avatarColors = [
+        '#166534', 
+        '#059669', 
+        '#0d9488', 
+        '#15803d', 
+        '#047857', 
+        '#115e59', 
+        '#065f46', 
+        '#14532d'  
+        ];
+
     let inboxMessages = [];
     let spamMessages = [];
     let activeTab = 'compose';
     let selectedId = null;
     let idCounter = 1;
 
-    // 3. Helper Functions
     function getInitials(text) {
         return text.substring(0, 2).toUpperCase();
     }
@@ -36,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return div.innerHTML;
     }
 
-    // 4. Initial processing from Server Prediction
+   
     if (serverPrediction && serverPrediction !== 'unknown') {
         const firstLine = serverEmailText.split('\n')[0].substring(0, 60) || 'No subject';
         const preview = serverEmailText.substring(0, 120);
@@ -58,27 +66,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 5. Local Storage Management
+   
     function loadMessages() {
         try {
             const saved = localStorage.getItem('mailguard_inbox');
             if (saved) inboxMessages = [...JSON.parse(saved), ...inboxMessages];
             const savedSpam = localStorage.getItem('mailguard_spam');
             if (savedSpam) spamMessages = [...JSON.parse(savedSpam), ...spamMessages];
-            
-            // Deduplicate by body
+
             const seenInbox = new Set();
             inboxMessages = inboxMessages.filter(m => {
                 if (seenInbox.has(m.body)) return false;
                 seenInbox.add(m.body); return true;
             });
-            
+
             const seenSpam = new Set();
             spamMessages = spamMessages.filter(m => {
                 if (seenSpam.has(m.body)) return false;
                 seenSpam.add(m.body); return true;
             });
-            
+
             let c = 1;
             inboxMessages.forEach(m => m.id = c++);
             spamMessages.forEach(m => m.id = c++);
@@ -98,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('spam-count').textContent = spamMessages.length;
     }
 
-    // 6. UI Rendering
+   
     window.switchTab = function(tab) {
         activeTab = tab;
         selectedId = null;
@@ -141,10 +148,12 @@ document.addEventListener('DOMContentLoaded', () => {
         dv.style.display = 'flex';
         dv.innerHTML = `
             <div class="detail-placeholder">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2"/>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                </svg>
+                <div class="placeholder-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                </div>
                 <p>Select a message to read</p>
                 <span>${activeTab === 'inbox' ? inboxMessages.length + ' conversations in your inbox' : spamMessages.length + ' messages flagged as spam'}</span>
             </div>
@@ -154,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderList(messages) {
         const listEl = document.getElementById('message-list');
         const clearBtn = document.getElementById('clear-list-btn');
-        
+
         if (messages.length > 0) {
             clearBtn.style.display = 'block';
         } else {
@@ -191,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="msg-subject">${escapeHtml(msg.subject)}</div>
                         <div class="msg-preview">${escapeHtml(msg.preview)}</div>
                     </div>
-                    <button onclick="event.stopPropagation(); deleteMessage(${msg.id})" style="background:transparent; border:none; color:#64748b; cursor:pointer; padding:4px; display:flex; align-items:center;">
+                    <button onclick="event.stopPropagation(); deleteMessage(${msg.id})" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:4px; display:flex; align-items:center; border-radius:6px; transition:all 0.12s;" onmouseover="this.style.color='#dc2626'; this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.color='var(--text-muted)'; this.style.background='transparent'">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -202,8 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // 7. Actions
-    window.selectMessage = function(id) {
+        window.selectMessage = function(id) {
         selectedId = id;
         const allMsgs = [...inboxMessages, ...spamMessages];
         const msg = allMsgs.find(m => m.id === id);
@@ -241,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="msg-avatar" style="background:${color};width:28px;height:28px;font-size:10px;">${getInitials(msg.sender)}</div>
                         <span class="meta-sender">${escapeHtml(msg.sender)}</span>
                         <span class="meta-time">· ${msg.time}</span>
-                        <span class="meta-badge" style="background:${isSpam ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)'};color:${isSpam ? '#f87171' : '#4ade80'};">${isSpam ? 'Spam' : 'Safe'} · ${msg.confidence}%</span>
+                        <span class="meta-badge" style="background:${isSpam ? 'rgba(220, 38, 38, 0.08)' : 'rgba(22, 101, 52, 0.08)'};color:${isSpam ? '#dc2626' : '#166534'};border-color:${isSpam ? 'rgba(220,38,38,0.15)' : 'rgba(22,101,52,0.15)'};">${isSpam ? 'Spam' : 'Safe'} · ${msg.confidence}%</span>
                     </div>
                 </div>
                 <div class="detail-actions">
@@ -288,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.clearCurrentList = function() {
         if (!confirm("Are you sure you want to delete all messages in this view?")) return;
-        
+
         if (activeTab === 'inbox') {
             inboxMessages = [];
         } else if (activeTab === 'spam') {
@@ -297,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             inboxMessages = [];
             spamMessages = [];
         }
-        
+
         finalizeAction();
     };
 
@@ -308,8 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         switchTab(activeTab);
     }
 
-    // 8. Boot Sequence
-    loadMessages();
+        loadMessages();
     updateCounts();
 
     if (serverPrediction && serverPrediction !== 'unknown') {
