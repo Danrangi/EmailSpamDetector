@@ -294,12 +294,20 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 10px;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--green-50);
     border: 1px solid var(--border-color);
-    overflow: hidden;
+    padding: 6px;                   
+}
+
+.sidebar-logo-img {
+    width: 100%;                    
+    height: 100%;                   
+    object-fit: contain;            
+    display: block;
 }
 
 .sidebar-logo-mini span {
@@ -309,12 +317,6 @@ body {
     letter-spacing: 0.5px;
 }
 
-.sidebar-logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 6px;
-}
 
 .sidebar-footer-text {
     font-size: 10px;
@@ -510,8 +512,8 @@ body {
 
 .compose-textarea {
     width: 100%;
-    max-width: 100%;
-    min-width: 100%;
+    max-width: 100%;              
+    box-sizing: border-box;       
     min-height: 140px;
     padding: 16px;
     border: 1.5px solid var(--border-color);
@@ -519,11 +521,10 @@ body {
     font-size: 14px;
     font-family: inherit;
     color: var(--text-primary);
-    resize: vertical !important;
+    resize: vertical !important;  
     line-height: 1.65;
     background: var(--bg-main);
     transition: all 0.2s ease;
-    box-sizing: border-box;
 }
 
 .compose-textarea:focus {
