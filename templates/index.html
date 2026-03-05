@@ -18,12 +18,8 @@
      data-spam-confidence="{{ spam_confidence if spam_confidence else 0 }}"
      style="display: none;"></div>
 
-<!-- ══════════════════════════════════════════
-     HEADER WITH LOGO
-     ══════════════════════════════════════════ -->
 <header class="header">
     <div class="header-brand">
-        <!-- LOGO AREA: Replace src with your actual logo file -->
         <div class="header-logo-wrapper">
             <img 
                 src="{{ url_for('static', filename='logo.png') }}" 
@@ -31,7 +27,6 @@
                 class="header-logo-img"
                 onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"
             >
-            <!-- Fallback if logo image not found -->
             <div class="header-logo-fallback" id="logo-fallback">
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -55,12 +50,8 @@
     </div>
 </header>
 
-<!-- ══════════════════════════════════════════
-     MAIN APP LAYOUT
-     ══════════════════════════════════════════ -->
 <div class="app-layout">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <nav class="sidebar-nav">
             <button class="nav-btn active" id="nav-inbox" onclick="switchTab('inbox')">
@@ -96,7 +87,6 @@
             </span>
         </button>
 
-        <!-- Sidebar bottom logo -->
         <div class="sidebar-footer">
             <div class="sidebar-logo-mini">
                 <img 
@@ -110,7 +100,6 @@
         </div>
     </aside>
 
-    <!-- MESSAGE LIST PANEL -->
     <div class="message-panel">
         <div class="message-panel-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -133,7 +122,6 @@
         </div>
     </div>
 
-    <!-- DETAIL / COMPOSE PANEL -->
     <div class="detail-panel" id="detail-panel">
 
         <div id="compose-view">
