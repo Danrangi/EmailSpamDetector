@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mail Guard</title>
+    <title>Mail Guard — IBBUL</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -16,21 +18,49 @@
      data-spam-confidence="{{ spam_confidence if spam_confidence else 0 }}"
      style="display: none;"></div>
 
+<!-- ══════════════════════════════════════════
+     HEADER WITH LOGO
+     ══════════════════════════════════════════ -->
 <header class="header">
     <div class="header-brand">
-        <div class="header-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2"/>
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-            </svg>
+        <!-- LOGO AREA: Replace src with your actual logo file -->
+        <div class="header-logo-wrapper">
+            <img 
+                src="{{ url_for('static', filename='logo.png') }}" 
+                alt="IBBUL Logo" 
+                class="header-logo-img"
+                onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"
+            >
+            <!-- Fallback if logo image not found -->
+            <div class="header-logo-fallback" id="logo-fallback">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+            </div>
         </div>
-        <span class="header-title">Mail Guard</span>
-        <span class="header-badge">AI Powered</span>
+        <div class="header-text">
+            <span class="header-title">Mail Guard</span>
+            <span class="header-subtitle">Email Spam Detection System</span>
+        </div>
+    </div>
+    <div class="header-right">
+        <span class="header-badge">
+            <span class="badge-dot"></span>
+            AI Powered
+        </span>
+        <div class="header-university">
+            IBBUL
+        </div>
     </div>
 </header>
 
+<!-- ══════════════════════════════════════════
+     MAIN APP LAYOUT
+     ══════════════════════════════════════════ -->
 <div class="app-layout">
 
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <nav class="sidebar-nav">
             <button class="nav-btn active" id="nav-inbox" onclick="switchTab('inbox')">
@@ -65,28 +95,45 @@
                 <span class="nav-label">New Check</span>
             </span>
         </button>
+
+        <!-- Sidebar bottom logo -->
+        <div class="sidebar-footer">
+            <div class="sidebar-logo-mini">
+                <img 
+                    src="{{ url_for('static', filename='logo.png') }}" 
+                    alt="IBBUL" 
+                    class="sidebar-logo-img"
+                    onerror="this.parentElement.innerHTML='<span>IBBUL</span>'"
+                >
+            </div>
+            <span class="sidebar-footer-text">© 2025 IBBUL</span>
+        </div>
     </aside>
 
+    <!-- MESSAGE LIST PANEL -->
     <div class="message-panel">
         <div class="message-panel-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h2 class="message-panel-title" id="panel-title">Inbox</h2>
-                <button id="clear-list-btn" onclick="clearCurrentList()" style="display:none; background:transparent; border:none; color:#ef4444; font-size:12px; font-weight:600; cursor:pointer;">Clear All</button>
+                <button id="clear-list-btn" onclick="clearCurrentList()" style="display:none; background:transparent; border:none; color:#dc2626; font-size:12px; font-weight:600; cursor:pointer; padding:4px 8px; border-radius:6px; transition: background 0.15s;" onmouseover="this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.background='transparent'">Clear All</button>
             </div>
             <p class="message-panel-sub" id="panel-sub">0 messages</p>
         </div>
         <div class="message-list" id="message-list">
             <div class="empty-state" id="empty-state">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2"/>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                </svg>
+                <div class="empty-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                </div>
                 <p>No messages yet</p>
                 <span>Classify an email to get started</span>
             </div>
         </div>
     </div>
 
+    <!-- DETAIL / COMPOSE PANEL -->
     <div class="detail-panel" id="detail-panel">
 
         <div id="compose-view">
@@ -112,7 +159,12 @@
                             </svg>
                             Classify Email
                         </button>
-                        <span class="compose-hint">Powered by ML model</span>
+                        <span class="compose-hint">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 14v-4m0-4h.01"/>
+                            </svg>
+                            Powered by ML model
+                        </span>
                     </div>
                 </div>
             </form>
@@ -178,9 +230,11 @@
 
             {% if not prediction or prediction == 'unknown' %}
             <div class="detail-placeholder">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>
-                </svg>
+                <div class="placeholder-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>
+                    </svg>
+                </div>
                 <p>Paste an email above and hit classify</p>
                 <span>The AI will sort it into Inbox or Spam for you</span>
             </div>
